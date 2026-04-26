@@ -36,6 +36,7 @@ namespace Enemies
 
                     playerHealth.currentHealth -= damage;
                 }
+                animator.SetBool("Punch", false);
             }
         }
 
@@ -73,6 +74,7 @@ namespace Enemies
             Instantiate(projectile, transform.position, gun.transform.rotation);
             _canFire = false;
             StartCoroutine(ShootCooldown(attackSpeed)); //this number changes the rate of fire on the enemies
+            animator.SetBool("Throw", false);
         }
 
         private IEnumerator ShootCooldown(float cooldown)

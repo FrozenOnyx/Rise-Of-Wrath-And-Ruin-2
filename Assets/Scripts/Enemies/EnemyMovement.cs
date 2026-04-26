@@ -15,6 +15,7 @@ public class EnemyMovement : MonoBehaviour
     public float personalBubble = 2f;
     public float dashCooldown = 3f;
     public float detectionRadius = 1.5f;
+    private bool distToGround;
     public LayerMask hazardLayer;
     public bool blocked;
     private Rigidbody2D rb;
@@ -23,6 +24,7 @@ public class EnemyMovement : MonoBehaviour
     private bool isDashing = false;
     private float nextDashTime;
     private SpriteRenderer sR;
+    public LayerMask groundLayer;
 
     void Awake()
     {
@@ -45,6 +47,10 @@ public class EnemyMovement : MonoBehaviour
 
         HandleAvoidance();
         FlipSprite();
+
+
+
+        Gravity();
     }
 
     public void OnCollisionStay2D(Collision2D other)
@@ -52,14 +58,17 @@ public class EnemyMovement : MonoBehaviour
         blocked = other.gameObject.tag == "Shield";
     }
 
-    public void GravityConst()
+    void Gravity()
     {
-        rb.AddForceY(9.63f);
+        distToGround = Physics2D.OverlapCircle(transform.position, 1.8f, groundLayer);
+
+        if (!distToGround)  //gravity
+            transform.position = (Vector2)transform.position + Vector2.down * .15f;
     }
-    
+
+
     void FixedUpdate()
     {
-        GravityConst();
         if (blocked) return;
         switch (currentState)
         {
@@ -157,5 +166,7 @@ public class EnemyMovement : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, personalBubble);
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(transform.position, 4f);
     }
 }
